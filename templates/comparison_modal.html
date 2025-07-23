@@ -1,0 +1,154 @@
+<div class="modal fade" id="comparisonModal" tabindex="-1" aria-labelledby="comparisonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="comparisonModalLabel">
+            <i class="fas fa-balance-scale me-2"></i>Product Comparison
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Summary Cards -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                  <h6>Best Overall</h6>
+                </div>
+                <div class="card-body">
+                  <h5>{{ comparison.best_overall }}</h5>
+                  <p class="mb-0">Highest combined score for price and quality</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                  <h6>Best Value</h6>
+                </div>
+                <div class="card-body">
+                  <h5>{{ comparison.best_value }}</h5>
+                  <p class="mb-0">Best price-to-quality ratio</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-warning">
+                <div class="card-header bg-warning text-white">
+                  <h6>Top Quality</h6>
+                </div>
+                <div class="card-body">
+                  <h5>{{ comparison.best_quality }}</h5>
+                  <p class="mb-0">Highest rated product</p>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="card mb-4">
+            <div class="card-header">
+                <h5>Detailed Comparison</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered comparison-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Feature</th>
+                                {% for product in comparison.products %}
+                                <th>{{ product.title|truncate(30) }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for feature, values in comparison.comparison_points.items() %}
+                            <tr>
+                                <td><strong>{{ feature }}</strong></td>
+                                {% for value in values %}
+                                <td {% if feature == 'Value Score' and loop.index0 == 0 %}class="table-success"{% endif %}>
+                                    {{ value }}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                            
+                            <!-- Key Specs Row -->
+                            <tr>
+                                <td><strong>Key Specs</strong></td>
+                                {% for product in comparison.products %}
+                                <td>
+                                    <ul class="list-unstyled specs-list">
+                                        {% if product.ram %}
+                                        <li><strong>RAM:</strong> {{ product.ram }}</li>
+                                        {% endif %}
+                                        {% if product.storage %}
+                                        <li><strong>Storage:</strong> {{ product.storage }}</li>
+                                        {% endif %}
+                                        {% if product.processor %}
+                                        <li><strong>Processor:</strong> {{ product.processor }}</li>
+                                        {% endif %}
+                                        {% if product.display %}
+                                        <li><strong>Display:</strong> {{ product.display }}</li>
+                                        {% endif %}
+                                    </ul>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+  
+          <!-- Pros & Cons -->
+          <div class="row">
+            {% for product, analysis in zip(comparison.products, comparison.pros_cons) %}
+            <div class="col-md-{{ 12//comparison.products|length }} mb-3">
+              <div class="card h-100">
+                <div class="card-header">
+                  <h5>{{ product.title|truncate(25) }}</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle me-2"></i>Pros</h6>
+                        <ul class="mb-0">
+                          {% for pro in analysis.pros %}
+                          <li>{{ pro }}</li>
+                          {% else %}
+                          <li class="text-muted">No notable pros</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="alert alert-danger">
+                        <h6><i class="fas fa-times-circle me-2"></i>Cons</h6>
+                        <ul class="mb-0">
+                          {% for con in analysis.cons %}
+                          <li>{{ con }}</li>
+                          {% else %}
+                          <li class="text-muted">No notable cons</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer text-center">
+                  <a href="{{ product.link }}" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-shopping-cart me-2"></i>View Product
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
